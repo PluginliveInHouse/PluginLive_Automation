@@ -33,7 +33,6 @@ public class TestExecutionforBulkStudentsOnboarding extends BaseClass {
     public void url() throws IOException, InterruptedException {
         implicitywait();
         enterurl(getPropertyFileValue("studentregistrationurl"));
-        javascriptscrolldown();
         pom.getLoginPage().register();
     }
 

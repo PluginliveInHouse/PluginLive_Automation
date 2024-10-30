@@ -6,6 +6,8 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
 import java.awt.*;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 
 public class UploadResume extends BaseClass {
@@ -38,8 +40,6 @@ public class UploadResume extends BaseClass {
         Thread.sleep(1000);
         click(getSkip());
     }
-
-
 
 
 }

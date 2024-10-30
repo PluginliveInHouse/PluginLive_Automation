@@ -357,7 +357,7 @@ public class BaseClass {
     //Students Onboarding
     public String readExcelData1(String sheetname, int rownum, int cellnum) throws IOException {
         String res = null;
-        File file = new File(getPropertyFileValue("studentOnboardingexcelpath"));
+        File file = new File(getPropertyFileValue("studentOnboardingviainstituteexcelpath"));
         FileInputStream fileInputStream = new FileInputStream(file);
         Workbook workbook = new XSSFWorkbook(fileInputStream);
         Sheet sheet = workbook.getSheet(sheetname);
@@ -390,7 +390,51 @@ public class BaseClass {
                 break;
         }
         return res;
+
+
     }
+
+
+    //Students Onboarding via institute
+    public String readExcelData2(String sheetname, int rownum, int cellnum) throws IOException {
+        String res = null;
+        File file = new File(getPropertyFileValue("studentOnboardingviainstituteexcelpath"));
+        FileInputStream fileInputStream = new FileInputStream(file);
+        Workbook workbook = new XSSFWorkbook(fileInputStream);
+        Sheet sheet = workbook.getSheet(sheetname);
+
+        Row row = sheet.getRow(rownum);
+        Cell cell = row.getCell(cellnum);
+        CellType cellType = cell.getCellType();
+        switch (cellType) {
+            case STRING:
+                res = cell.getStringCellValue();
+                break;
+
+            case NUMERIC:
+                if (DateUtil.isCellDateFormatted(cell)) {
+                    Date dateCellValue = cell.getDateCellValue();
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                    res = dateFormat.format(dateCellValue);
+                } else {
+                    double numericCellValue = cell.getNumericCellValue();
+                    long check = Math.round(numericCellValue);
+                    if (numericCellValue == check) {
+                        res = String.valueOf(check);
+                    } else {
+                        res = String.valueOf(numericCellValue);
+                    }
+                }
+
+                break;
+            default:
+                break;
+        }
+        return res;
+
+
+    }
+
 
     // WriteDataincellExcel
     public void WriteDataincellExcel(String sheetname, int cellnum, int rownum, String data) throws IOException {
