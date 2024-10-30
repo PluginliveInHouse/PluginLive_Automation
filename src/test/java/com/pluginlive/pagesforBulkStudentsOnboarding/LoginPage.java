@@ -17,20 +17,37 @@ public class LoginPage extends BaseClass {
     }
 
 
-    @FindBy(xpath = "//a[text()='Register']")
-    private WebElement registerButton;
-
-
-    public WebElement getRegisterButton() {
-        return registerButton;
+    public WebElement getPickprofile() {
+        return pickprofile;
     }
+
+    @FindBy(xpath = "//button[@class='PickProfile']")
+    private WebElement pickprofile;
+
+    public WebElement getFreshers() {
+        return freshers;
+    }
+
+    @FindBy(xpath = "//div[@class=\"FresherBgSection\"]")
+private WebElement freshers;
+
+    public WebElement getLogin() {
+        return login;
+    }
+
+    @FindBy(xpath = "(//button[text()='Login'])[1]")
+    private WebElement login;
 
 
     public void register() throws InterruptedException {
         Thread.sleep(1000);
 //        visibilityOf(getRegisterButton());
         System.out.println("Before clicking register");
-        click(getRegisterButton());
+        click(getPickprofile());
         System.out.println("After clicking register");
+        click(getFreshers());
+        Thread.sleep(1000);
+        click(getLogin());
+
     }
 }

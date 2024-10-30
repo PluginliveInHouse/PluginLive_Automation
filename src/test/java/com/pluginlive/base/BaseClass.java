@@ -4,8 +4,10 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.xmlbeans.impl.jam.JElement;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -27,11 +29,6 @@ public class BaseClass {
     public static WebDriver driver;
 
     public BaseClass() throws IOException {
-    }
-
-    //Launching Browser
-    public static void browserlaunch() {
-        driver = new ChromeDriver();
     }
 
     // Entering URL
@@ -108,6 +105,18 @@ public class BaseClass {
         driverWait.until(ExpectedConditions.visibilityOf(element));
     }
 
+    //Javascript sendkeys
+    public void elementSendKeysjs(WebElement element, String data) {
+        JavascriptExecutor js =(JavascriptExecutor)driver;
+        js.executeScript("arguments[0].setAttribute('value','"+data+"')",element);
+    }
+
+    //elemententer
+    public static void enter(WebDriver driver) {
+        WebElement activeElement = driver.switchTo().activeElement();
+        activeElement.sendKeys(Keys.ENTER);
+    }
+
     //elementtobeclickable
     public void elementtobeclickable(WebElement element) {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(60)); // Wait up to 10 seconds
@@ -158,11 +167,14 @@ public class BaseClass {
 
 
     //getdriver
-    public void getdriver(String browsertype) {
+    public void getdriverheadless(String browsertype) {
         switch (browsertype) {
             case "ChromeDriver":
+                ChromeOptions options = new ChromeOptions();
+                options.addArguments("--headless");
                 WebDriverManager.chromedriver().setup();
-                driver = new ChromeDriver();
+                driver = new ChromeDriver(options);
+
                 break;
             case "firefox":
                 driver = new FirefoxDriver();
@@ -170,6 +182,20 @@ public class BaseClass {
         }
 
     }
+
+    public void getdriver(String browsertype){
+        switch (browsertype) {
+            case "ChromeDriver":
+                WebDriverManager.chromedriver().clearDriverCache().setup();
+              //  WebDriverManager.chromedriver().setup();
+                driver = new ChromeDriver();
+                break;
+            case "firefox":
+                driver = new FirefoxDriver();
+                break;
+        }
+    }
+
 
     // enterKey
     public void enterKey() throws AWTException {
@@ -277,7 +303,7 @@ public class BaseClass {
         TakesScreenshot tk = (TakesScreenshot) driver;
         File file = tk.getScreenshotAs(OutputType.FILE);
         try {
-            FileUtils.copyFile(file, new File("C:\\Users\\ICANIO-10090\\Desktop\\Project\\PluginLive-Automation\\Screenshot\\"+"FailedScreenshot_"+Methodname+"_"+".jpg"));
+            FileUtils.copyFile(file, new File("C:\\Users\\Priya Thangaraj\\Desktop\\Pluginlive Automation\\PluginLive-Automation (1)\\Screenshot\\"+"FailedScreenshot_"+Methodname+"_"+".jpg"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -331,7 +357,7 @@ public class BaseClass {
     //Students Onboarding
     public String readExcelData1(String sheetname, int rownum, int cellnum) throws IOException {
         String res = null;
-        File file = new File(getPropertyFileValue("studentOnboardingexcelpath"));
+        File file = new File(getPropertyFileValue("studentOnboardingviainstituteexcelpath"));
         FileInputStream fileInputStream = new FileInputStream(file);
         Workbook workbook = new XSSFWorkbook(fileInputStream);
         Sheet sheet = workbook.getSheet(sheetname);
@@ -364,7 +390,51 @@ public class BaseClass {
                 break;
         }
         return res;
+
+
     }
+
+
+    //Students Onboarding via institute
+    public String readExcelData2(String sheetname, int rownum, int cellnum) throws IOException {
+        String res = null;
+        File file = new File(getPropertyFileValue("studentOnboardingviainstituteexcelpath"));
+        FileInputStream fileInputStream = new FileInputStream(file);
+        Workbook workbook = new XSSFWorkbook(fileInputStream);
+        Sheet sheet = workbook.getSheet(sheetname);
+
+        Row row = sheet.getRow(rownum);
+        Cell cell = row.getCell(cellnum);
+        CellType cellType = cell.getCellType();
+        switch (cellType) {
+            case STRING:
+                res = cell.getStringCellValue();
+                break;
+
+            case NUMERIC:
+                if (DateUtil.isCellDateFormatted(cell)) {
+                    Date dateCellValue = cell.getDateCellValue();
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                    res = dateFormat.format(dateCellValue);
+                } else {
+                    double numericCellValue = cell.getNumericCellValue();
+                    long check = Math.round(numericCellValue);
+                    if (numericCellValue == check) {
+                        res = String.valueOf(check);
+                    } else {
+                        res = String.valueOf(numericCellValue);
+                    }
+                }
+
+                break;
+            default:
+                break;
+        }
+        return res;
+
+
+    }
+
 
     // WriteDataincellExcel
     public void WriteDataincellExcel(String sheetname, int cellnum, int rownum, String data) throws IOException {

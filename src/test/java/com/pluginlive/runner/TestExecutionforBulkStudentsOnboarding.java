@@ -33,14 +33,13 @@ public class TestExecutionforBulkStudentsOnboarding extends BaseClass {
     public void url() throws IOException, InterruptedException {
         implicitywait();
         enterurl(getPropertyFileValue("studentregistrationurl"));
-        javascriptscrolldown();
         pom.getLoginPage().register();
     }
 
     //Data from excel
     @DataProvider(name = "studentonboarding")
     public String[][] getData() throws IOException {
-        String path = "C:\\Users\\ICANIO-10090\\Desktop\\Project\\PluginLive-Automation\\Excel\\PluginLive Automation Students Onboarding.xlsx";
+        String path = "C:\\Users\\Priya Thangaraj\\Desktop\\Pluginlive Automation\\PluginLive-Automation (1)\\Excel\\PluginLive Automation Students Onboarding.xlsx";
         XLUtility xlutil = new XLUtility(path);
         int totalrows = xlutil.getRowCount("BulkStudentOnboarding");
         int totalcols = xlutil.getCellCount("BulkStudentOnboarding", 1);
